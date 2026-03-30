@@ -1,12 +1,17 @@
 package;
 
+import flixel.tweens.FlxTween;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.text.FlxText;
 
-class LatencyState extends FlxState
+/**
+	TODO: GET MORE WORK DONE ON THIS
+**/
+
+class LatencyState extends MusicBeatState
 {
 	var offsetText:FlxText;
 	var noteGrp:FlxTypedGroup<Note>;
@@ -27,6 +32,7 @@ class LatencyState extends FlxState
 
 		offsetText = new FlxText();
 		offsetText.screenCenter();
+		offsetText.x = 10;
 		add(offsetText);
 
 		strumLine = new FlxSprite(FlxG.width / 2, 100).makeGraphic(FlxG.width, 5);
@@ -39,7 +45,7 @@ class LatencyState extends FlxState
 
 	override function update(elapsed:Float)
 	{
-		offsetText.text = "Offset: " + Conductor.offset + "ms";
+		offsetText.text = "Offset: " + Conductor.offset + "ms" + '\n\nLEFT / RIGHT : Adjust offset by 1 (or 10 if Shift pressed)\nESCAPE to leave';
 
 		Conductor.songPosition = FlxG.sound.music.time - Conductor.offset;
 
@@ -53,7 +59,7 @@ class LatencyState extends FlxState
 		if (FlxG.keys.justPressed.LEFT)
 			Conductor.offset -= 1 * multiply;
 
-		if (FlxG.keys.justPressed.SPACE)
+		if (FlxG.keys.justPressed.ESCAPE)
 		{
 			FlxG.sound.music.stop();
 
@@ -70,5 +76,13 @@ class LatencyState extends FlxState
 		});
 
 		super.update(elapsed);
+	}
+
+	override function beatHit() {
+		super.beatHit();
+
+		FlxG.camera.zoom = 1.1;
+
+		FlxTween.tween(FlxG.camera, {zoom: 1}, Conductor.stepCrochet);
 	}
 }

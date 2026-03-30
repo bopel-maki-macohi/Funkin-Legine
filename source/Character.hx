@@ -144,15 +144,15 @@ class Character extends FlxSprite
 			addOffset(splitWords[0], Std.parseInt(splitWords[1]), Std.parseInt(splitWords[2]));
 		}
 	}
+	
+	public var startedDeath:Bool = false;
 
 	override function update(elapsed:Float)
 	{
-		if (!curCharacter.startsWith('bf'))
+		if (!isPlayer)
 		{
 			if (animation.curAnim.name.startsWith('sing'))
-			{
 				holdTimer += elapsed;
-			}
 
 			var dadVar:Float = 4;
 
@@ -162,6 +162,25 @@ class Character extends FlxSprite
 			{
 				dance();
 				holdTimer = 0;
+			}
+		}
+		else if (isPlayer && !debugModes)
+		{
+			if (animation.curAnim.name.startsWith('sing'))
+			{
+				holdTimer += elapsed;
+			}
+			else
+				holdTimer = 0;
+
+			if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
+			{
+				playAnim('idle', true, false, 10);
+			}
+
+			if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished && startedDeath)
+			{
+				playAnim('deathLoop');
 			}
 		}
 
@@ -177,30 +196,6 @@ class Character extends FlxSprite
 			case 'gf':
 				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
 					playAnim('danceRight');
-			case "pico-speaker":
-				// for pico??
-				if (animationNotes.length > 0)
-				{
-					if (Conductor.songPosition > animationNotes[0][0])
-					{
-						trace('played shoot anim' + animationNotes[0][1]);
-
-						var shootAnim:Int = 1;
-
-						if (animationNotes[0][1] >= 2)
-							shootAnim = 3;
-
-						shootAnim += FlxG.random.int(0, 1);
-
-						playAnim('shoot' + shootAnim, true);
-						animationNotes.shift();
-					}
-				}
-
-				if (animation.curAnim.finished)
-				{
-					playAnim(animation.curAnim.name, false, false, animation.curAnim.numFrames - 3);
-				}
 		}
 
 		super.update(elapsed);
@@ -229,8 +224,8 @@ class Character extends FlxSprite
 					}
 
 				case 'pico-speaker':
-				// lol weed
-				// playAnim('shoot' + FlxG.random.int(1, 4), true);
+					// lol weed
+					// playAnim('shoot' + FlxG.random.int(1, 4), true);
 
 				case 'tankman':
 					if (!animation.curAnim.name.endsWith('DOWN-alt'))

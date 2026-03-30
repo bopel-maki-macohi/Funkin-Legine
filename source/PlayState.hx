@@ -33,10 +33,6 @@ import ui.PreferencesMenu;
 
 using StringTools;
 
-#if discord_rpc
-import Discord.DiscordClient;
-#end
-
 class PlayState extends MusicBeatState
 {
 	public static var curStage:String = '';
@@ -53,7 +49,7 @@ class PlayState extends MusicBeatState
 
 	private var dad:Character;
 	private var gf:Character;
-	private var boyfriend:Boyfriend;
+	private var boyfriend:Character;
 
 	private var notes:FlxTypedGroup<Note>;
 	private var unspawnNotes:Array<Note> = [];
@@ -84,8 +80,6 @@ class PlayState extends MusicBeatState
 	private var iconP2:HealthIcon;
 	private var camHUD:FlxCamera;
 	private var camGame:FlxCamera;
-
-	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 
 	public static var seenCutscene:Bool = false;
 
@@ -151,24 +145,17 @@ class PlayState extends MusicBeatState
 		defaultCamZoom = 0.9;
 		curStage = 'stage';
 
-		var bg:BGSprite = new BGSprite('stageback', -600, -200, 0.9, 0.9);
-		add(bg);
+		var stageBack:BGSprite = new BGSprite('stageback', -600, -200, 0.9, 0.9);
+		add(stageBack);
 
-		var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
+		var stageFront:BGSprite = new BGSprite('stagefront', -650, 600, 0.9, 0.9);
 		stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
 		stageFront.updateHitbox();
-		stageFront.antialiasing = true;
-		stageFront.scrollFactor.set(0.9, 0.9);
-		stageFront.active = false;
 		add(stageFront);
 
-		var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
+		var stageCurtains:BGSprite = new BGSprite('stagecurtains', -500, -300, 1.3, 1.3);
 		stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
 		stageCurtains.updateHitbox();
-		stageCurtains.antialiasing = true;
-		stageCurtains.scrollFactor.set(1.3, 1.3);
-		stageCurtains.active = false;
-
 		add(stageCurtains);
 
 		gf = new Character(400, 130, 'gf');
@@ -192,7 +179,7 @@ class PlayState extends MusicBeatState
 				camPos.x += 400;
 		}
 
-		boyfriend = new Boyfriend(770, 450, SONG.player1);
+		boyfriend = new Character(770, 450, SONG.player1);
 
 		add(gf);
 
@@ -200,10 +187,6 @@ class PlayState extends MusicBeatState
 		add(boyfriend);
 
 		add(foregroundSprites);
-
-		var doof:DialogueBox = new DialogueBox(false, dialogue);
-		doof.scrollFactor.set();
-		doof.finishThing = startCountdown;
 
 		Conductor.songPosition = -5000;
 
@@ -290,7 +273,6 @@ class PlayState extends MusicBeatState
 		iconP1.cameras = [camHUD];
 		iconP2.cameras = [camHUD];
 		scoreTxt.cameras = [camHUD];
-		doof.cameras = [camHUD];
 
 		startingSong = true;
 
@@ -332,92 +314,6 @@ class PlayState extends MusicBeatState
 		#end
 	}
 
-	function schoolIntro(?dialogueBox:DialogueBox):Void
-	{
-		var black:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, FlxColor.BLACK);
-		black.scrollFactor.set();
-		add(black);
-
-		var red:FlxSprite = new FlxSprite(-100, -100).makeGraphic(FlxG.width * 2, FlxG.height * 2, 0xFFff1b31);
-		red.scrollFactor.set();
-
-		var senpaiEvil:FlxSprite = new FlxSprite();
-		senpaiEvil.frames = Paths.getSparrowAtlas('weeb/senpaiCrazy');
-		senpaiEvil.animation.addByPrefix('idle', 'Senpai Pre Explosion', 24, false);
-		senpaiEvil.setGraphicSize(Std.int(senpaiEvil.width * daPixelZoom));
-		senpaiEvil.scrollFactor.set();
-		senpaiEvil.updateHitbox();
-		senpaiEvil.screenCenter();
-		senpaiEvil.x += senpaiEvil.width / 5;
-
-		camFollow.setPosition(camPos.x, camPos.y);
-
-		if (SONG.song.toLowerCase() == 'roses' || SONG.song.toLowerCase() == 'thorns')
-		{
-			remove(black);
-
-			if (SONG.song.toLowerCase() == 'thorns')
-			{
-				add(red);
-				camHUD.visible = false;
-			}
-			else
-				FlxG.sound.play(Paths.sound('ANGRY'));
-			// moved senpai angry noise in here to clean up cutscene switch case lol
-		}
-
-		new FlxTimer().start(0.3, function(tmr:FlxTimer)
-		{
-			black.alpha -= 0.15;
-
-			if (black.alpha > 0)
-				tmr.reset(0.3);
-			else
-			{
-				if (dialogueBox != null)
-				{
-					inCutscene = true;
-
-					if (SONG.song.toLowerCase() == 'thorns')
-					{
-						add(senpaiEvil);
-						senpaiEvil.alpha = 0;
-						new FlxTimer().start(0.3, function(swagTimer:FlxTimer)
-						{
-							senpaiEvil.alpha += 0.15;
-							if (senpaiEvil.alpha < 1)
-								swagTimer.reset();
-							else
-							{
-								senpaiEvil.animation.play('idle');
-								FlxG.sound.play(Paths.sound('Senpai_Dies'), 1, false, null, true, function()
-								{
-									remove(senpaiEvil);
-									remove(red);
-									FlxG.camera.fade(FlxColor.WHITE, 0.01, true, function()
-									{
-										add(dialogueBox);
-										camHUD.visible = true;
-									}, true);
-								});
-								new FlxTimer().start(3.2, function(deadTime:FlxTimer)
-								{
-									FlxG.camera.fade(FlxColor.WHITE, 1.6, false);
-								});
-							}
-						});
-					}
-					else
-						add(dialogueBox);
-				}
-				else
-					startCountdown();
-
-				remove(black);
-			}
-		});
-	}
-
 	var startTimer:FlxTimer = new FlxTimer();
 	var perfectMode:Bool = false;
 
@@ -456,11 +352,6 @@ class PlayState extends MusicBeatState
 			var introSprPaths:Array<String> = ["ready", "set", "go"];
 			var altSuffix:String = "";
 
-			if (curStage.startsWith("school"))
-			{
-				altSuffix = '-pixel';
-				introSprPaths = ['weeb/pixelUI/ready-pixel', 'weeb/pixelUI/set-pixel', 'weeb/pixelUI/date-pixel'];
-			}
 
 			var introSndPaths:Array<String> = [
 				"intro3" + altSuffix, "intro2" + altSuffix,
@@ -492,8 +383,8 @@ class PlayState extends MusicBeatState
 		var spr:FlxSprite = new FlxSprite().loadGraphic(Paths.image(path));
 		spr.scrollFactor.set();
 
-		if (curStage.startsWith('school'))
-			spr.setGraphicSize(Std.int(spr.width * daPixelZoom));
+		// if (curStage.startsWith('school'))
+		// 	spr.setGraphicSize(Std.int(spr.width * daPixelZoom));
 
 		spr.updateHitbox();
 		spr.screenCenter();
@@ -641,41 +532,6 @@ class PlayState extends MusicBeatState
 
 			switch (curStage)
 			{
-				case 'school' | 'schoolEvil':
-					babyArrow.loadGraphic(Paths.image('weeb/pixelUI/arrows-pixels'), true, 17, 17);
-					babyArrow.animation.add('green', [6]);
-					babyArrow.animation.add('red', [7]);
-					babyArrow.animation.add('blue', [5]);
-					babyArrow.animation.add('purplel', [4]);
-
-					babyArrow.setGraphicSize(Std.int(babyArrow.width * daPixelZoom));
-					babyArrow.updateHitbox();
-					babyArrow.antialiasing = false;
-
-					switch (Math.abs(i))
-					{
-						case 0:
-							babyArrow.x += Note.swagWidth * 0;
-							babyArrow.animation.add('static', [0]);
-							babyArrow.animation.add('pressed', [4, 8], 12, false);
-							babyArrow.animation.add('confirm', [12, 16], 24, false);
-						case 1:
-							babyArrow.x += Note.swagWidth * 1;
-							babyArrow.animation.add('static', [1]);
-							babyArrow.animation.add('pressed', [5, 9], 12, false);
-							babyArrow.animation.add('confirm', [13, 17], 24, false);
-						case 2:
-							babyArrow.x += Note.swagWidth * 2;
-							babyArrow.animation.add('static', [2]);
-							babyArrow.animation.add('pressed', [6, 10], 12, false);
-							babyArrow.animation.add('confirm', [14, 18], 12, false);
-						case 3:
-							babyArrow.x += Note.swagWidth * 3;
-							babyArrow.animation.add('static', [3]);
-							babyArrow.animation.add('pressed', [7, 11], 12, false);
-							babyArrow.animation.add('confirm', [15, 19], 24, false);
-					}
-
 				default:
 					babyArrow.frames = Paths.getSparrowAtlas('NOTE_assets');
 					babyArrow.animation.addByPrefix('green', 'arrowUP');
@@ -1028,8 +884,6 @@ class PlayState extends MusicBeatState
 
 				openSubState(new GameOverSubstate(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
 
-				// FlxG.switchState(() -> new GameOverState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-
 				#if discord_rpc
 				// Game Over doesn't get his own variable because it's only used here
 				DiscordClient.changePresence("Game Over - " + detailsText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
@@ -1243,21 +1097,10 @@ class PlayState extends MusicBeatState
 				transIn = FlxTransitionableState.defaultTransIn;
 				transOut = FlxTransitionableState.defaultTransOut;
 
-				switch (PlayState.storyWeek)
-				{
-					default:
-						FlxG.switchState(() -> new StoryMenuState());
-				}
+						// FlxG.switchState(() -> new StoryMenuState());
 
-				// if ()
-				StoryMenuState.weekUnlocked[Std.int(Math.min(storyWeek + 1, StoryMenuState.weekUnlocked.length - 1))] = true;
-
-				if (SONG.validScore)
-				{
 					Highscore.saveWeekScore(storyWeek, campaignScore, storyDifficulty);
-				}
 
-				FlxG.save.data.weekUnlocked = StoryMenuState.weekUnlocked;
 				FlxG.save.flush();
 			}
 			else
@@ -1287,9 +1130,9 @@ class PlayState extends MusicBeatState
 		}
 		else
 		{
-			trace('WENT BACK TO FREEPLAY??');
+			// trace('WENT BACK TO FREEPLAY??');
 			// unloadAssets();
-			FlxG.switchState(() -> new FreeplayState());
+			// FlxG.switchState(() -> new FreeplayState());
 		}
 	}
 
@@ -1358,11 +1201,11 @@ class PlayState extends MusicBeatState
 
 		add(rating);
 
-		if (curStage.startsWith('school'))
-		{
-			rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
-		}
-		else
+		// if (curStage.startsWith('school'))
+		// {
+		// 	rating.setGraphicSize(Std.int(rating.width * daPixelZoom * 0.7));
+		// }
+		// else
 		{
 			rating.setGraphicSize(Std.int(rating.width * 0.7));
 			rating.antialiasing = true;
@@ -1407,11 +1250,11 @@ class PlayState extends MusicBeatState
 
 		add(comboSpr);
 
-		if (curStage.startsWith('school'))
-		{
-			comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
-		}
-		else
+		// if (curStage.startsWith('school'))
+		// {
+		// 	comboSpr.setGraphicSize(Std.int(comboSpr.width * daPixelZoom * 0.7));
+		// }
+		// else
 		{
 			comboSpr.setGraphicSize(Std.int(comboSpr.width * 0.7));
 			comboSpr.antialiasing = true;
@@ -1445,11 +1288,11 @@ class PlayState extends MusicBeatState
 			var numScore:FlxSprite = new FlxSprite().loadGraphic(Paths.image(pixelShitPart1 + 'num' + Std.int(i) + pixelShitPart2));
 			numScore.y = comboSpr.y;
 
-			if (curStage.startsWith('school'))
-			{
-				numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
-			}
-			else
+			// if (curStage.startsWith('school'))
+			// {
+			// 	numScore.setGraphicSize(Std.int(numScore.width * daPixelZoom));
+			// }
+			// else
 			{
 				numScore.antialiasing = true;
 				numScore.setGraphicSize(Std.int(numScore.width * 0.5));

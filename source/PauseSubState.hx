@@ -22,7 +22,7 @@ class PauseSubState extends MusicBeatSubstate
 		'Restart Song',
 		'Change Difficulty',
 		'Toggle Practice Mode',
-		'Exit to menu'
+		// 'Exit to menu',
 	];
 	var difficultyChoices:Array<String> = ['EASY', 'NORMAL', 'HARD', 'BACK'];
 
@@ -170,10 +170,10 @@ class PauseSubState extends MusicBeatSubstate
 				case "Exit to menu":
 					PlayState.seenCutscene = false;
 					PlayState.deathCounter = 0;
-					if (PlayState.isStoryMode)
-						FlxG.switchState(() -> new StoryMenuState());
-					else
-						FlxG.switchState(() -> new FreeplayState());
+					// if (PlayState.isStoryMode)
+						// FlxG.switchState(() -> new StoryMenuState());
+					// else
+						// FlxG.switchState(() -> new FreeplayState());
 			}
 		}
 
