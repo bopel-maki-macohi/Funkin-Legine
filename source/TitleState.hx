@@ -20,19 +20,8 @@ import flixel.util.FlxTimer;
 import lime.app.Application;
 import lime.ui.Window;
 import openfl.Assets;
-import openfl.display.Sprite;
-import openfl.events.AsyncErrorEvent;
-import openfl.events.AsyncErrorEvent;
-import openfl.events.Event;
-import openfl.events.MouseEvent;
-import openfl.events.NetStatusEvent;
-import openfl.media.Video;
-import openfl.net.NetConnection;
-import openfl.net.NetStream;
-import shaderslmfao.BuildingShaders.BuildingShader;
-import shaderslmfao.BuildingShaders;
-import shaderslmfao.ColorSwap;
 import ui.PreferencesMenu;
+import shaderslmfao.ColorSwap;
 
 using StringTools;
 
@@ -60,12 +49,7 @@ class TitleState extends MusicBeatState
 	var wackyImage:FlxSprite;
 	var lastBeat:Int = 0;
 	var swagShader:ColorSwap;
-	var alphaShader:BuildingShaders;
 	var thingie:FlxSprite;
-
-	var video:Video;
-	var netStream:NetStream;
-	private var overlay:Sprite;
 
 	override public function create():Void
 	{
@@ -74,7 +58,6 @@ class TitleState extends MusicBeatState
 		FlxG.game.focusLostFramerate = 60;
 
 		swagShader = new ColorSwap();
-		alphaShader = new BuildingShaders();
 
 		FlxG.sound.muteKeys = [ZERO];
 
@@ -84,38 +67,13 @@ class TitleState extends MusicBeatState
 
 		super.create();
 
-		FlxG.save.bind('funkin', 'ninjamuffin99');
+		FlxG.save.bind('Funkin-Legine', 'Maki');
 		PreferencesMenu.initPrefs();
 		PlayerSettings.init();
 		Highscore.load();
 
-		#if newgrounds
-		NGio.init();
-		#end
-
-		if (FlxG.save.data.weekUnlocked != null)
-		{
-			// FIX LATER!!!
-			// WEEK UNLOCK PROGRESSION!!
-			// StoryMenuState.weekUnlocked = FlxG.save.data.weekUnlocked;
-
-			if (StoryMenuState.weekUnlocked.length < 4)
-				StoryMenuState.weekUnlocked.insert(0, true);
-
-			// QUICK PATCH OOPS!
-			if (!StoryMenuState.weekUnlocked[0])
-				StoryMenuState.weekUnlocked[0] = true;
-		}
-
-		if (FlxG.save.data.seenVideo != null)
-		{
-			VideoState.seenVideo = FlxG.save.data.seenVideo;
-		}
-
 		#if FREEPLAY
 		FlxG.switchState(() -> new FreeplayState());
-		#elseif ANIMATE
-		FlxG.switchState(() -> new CutsceneAnimTestState());
 		#elseif CHARTING
 		FlxG.switchState(() -> new ChartingState());
 		#else
@@ -133,42 +91,6 @@ class TitleState extends MusicBeatState
 			DiscordClient.shutdown();
 		});
 		#end
-	}
-
-	private function client_onMetaData(metaData:Dynamic)
-	{
-		video.attachNetStream(netStream);
-
-		video.width = video.videoWidth;
-		video.height = video.videoHeight;
-		// video.
-	}
-
-	private function netStream_onAsyncError(event:AsyncErrorEvent):Void
-	{
-		trace("Error loading video");
-	}
-
-	private function netConnection_onNetStatus(event:NetStatusEvent):Void
-	{
-		if (event.info.code == 'NetStream.Play.Complete')
-		{
-			// netStream.dispose();
-			// FlxG.stage.removeChild(video);
-
-			startIntro();
-		}
-
-		trace(event.toString());
-	}
-
-	private function overlay_onMouseDown(event:MouseEvent):Void
-	{
-		netStream.soundTransform.volume = 0.2;
-		netStream.soundTransform.pan = -1;
-		// netStream.play(Paths.file('music/kickstarterTrailer.mp4'));
-
-		FlxG.stage.removeChild(overlay);
 	}
 
 	var logoBl:FlxSprite;
@@ -216,7 +138,6 @@ class TitleState extends MusicBeatState
 		logoBl.updateHitbox();
 
 		logoBl.shader = swagShader.shader;
-		// logoBl.shader = alphaShader.shader;
 
 		// trace();
 		// logoBl.screenCenter();
@@ -285,9 +206,6 @@ class TitleState extends MusicBeatState
 			skipIntro();
 		else
 			initialized = true;
-
-		if (FlxG.sound.music != null)
-			FlxG.sound.music.onComplete = function() FlxG.switchState(() -> new VideoState());
 
 		startedIntro = true;
 		// credGroup.add(credTextShit);
@@ -402,21 +320,6 @@ class TitleState extends MusicBeatState
 
 		if (pressedEnter && !skippedIntro && initialized)
 			skipIntro();
-		/* 
-			#if web
-			if (!initialized && controls.ACCEPT)
-			{
-				// netStream.dispose();
-				// FlxG.stage.removeChild(video);
-
-				startIntro();
-				skipIntro();
-			}
-			#end
-		 */
-
-		// if (FlxG.keys.justPressed.SPACE)
-		// swagShader.hasOutline = !swagShader.hasOutline;
 
 		if (controls.UI_LEFT)
 			swagShader.update(-elapsed * 0.1);
