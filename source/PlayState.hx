@@ -1134,6 +1134,8 @@ class PlayState extends MusicBeatState
 			// unloadAssets();
 			// FlxG.switchState(() -> new FreeplayState());
 		}
+
+		Sys.exit(0);
 	}
 
 	// gives score and pops up rating
