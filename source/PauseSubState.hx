@@ -7,7 +7,7 @@ import flixel.FlxSubState;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.keyboard.FlxKey;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -171,9 +171,9 @@ class PauseSubState extends MusicBeatSubstate
 					PlayState.seenCutscene = false;
 					PlayState.deathCounter = 0;
 					if (PlayState.isStoryMode)
-						FlxG.switchState(new StoryMenuState());
+						FlxG.switchState(() -> new StoryMenuState());
 					else
-						FlxG.switchState(new FreeplayState());
+						FlxG.switchState(() -> new FreeplayState());
 			}
 		}
 

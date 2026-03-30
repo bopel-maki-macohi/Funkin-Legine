@@ -113,11 +113,11 @@ class TitleState extends MusicBeatState
 		}
 
 		#if FREEPLAY
-		FlxG.switchState(new FreeplayState());
+		FlxG.switchState(() -> new FreeplayState());
 		#elseif ANIMATE
-		FlxG.switchState(new CutsceneAnimTestState());
+		FlxG.switchState(() -> new CutsceneAnimTestState());
 		#elseif CHARTING
-		FlxG.switchState(new ChartingState());
+		FlxG.switchState(() -> new ChartingState());
 		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{
@@ -287,7 +287,7 @@ class TitleState extends MusicBeatState
 			initialized = true;
 
 		if (FlxG.sound.music != null)
-			FlxG.sound.music.onComplete = function() FlxG.switchState(new VideoState());
+			FlxG.sound.music.onComplete = function() FlxG.switchState(() -> new VideoState());
 
 		startedIntro = true;
 		// credGroup.add(credTextShit);
@@ -314,7 +314,7 @@ class TitleState extends MusicBeatState
 	{
 		#if debug
 		if (FlxG.keys.justPressed.EIGHT)
-			FlxG.switchState(new CutsceneAnimTestState());
+			FlxG.switchState(() -> new CutsceneAnimTestState());
 		#end
 
 		/* 
@@ -362,13 +362,6 @@ class TitleState extends MusicBeatState
 		{
 			if (FlxG.sound.music != null)
 				FlxG.sound.music.onComplete = null;
-			// netStream.play(Paths.file('music/kickstarterTrailer.mp4'));
-			NGio.unlockMedal(60960);
-
-			// If it's Friday according to da clock
-			if (Date.now().getDay() == 5)
-				NGio.unlockMedal(61034);
-
 			titleText.animation.play('press');
 
 			FlxG.camera.flash(FlxColor.WHITE, 1);
@@ -390,19 +383,19 @@ class TitleState extends MusicBeatState
 					if (version.trim() != onlineVersion)
 					{
 						trace('OLD VERSION!');
-						// FlxG.switchState(new OutdatedSubState());
+						// FlxG.switchState(() -> new OutdatedSubState());
 					}
 					else
 					{
-						// FlxG.switchState(new MainMenuState());
+						// FlxG.switchState(() -> new MainMenuState());
 					}
 
 					// REDO FOR ITCH/FINAL SHIT
-					FlxG.switchState(new MainMenuState());
+					FlxG.switchState(() -> new MainMenuState());
 				});
 			}
 			#else
-			FlxG.switchState(new MainMenuState());
+			FlxG.switchState(() -> new MainMenuState());
 			#end
 			// FlxG.sound.play(Paths.music('titleShoot'), 0.7);
 		}
