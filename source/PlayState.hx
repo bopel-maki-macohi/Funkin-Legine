@@ -739,18 +739,6 @@ class PlayState extends MusicBeatState
 			#end
 		}
 
-		if (FlxG.keys.justPressed.SEVEN)
-		{
-			FlxG.switchState(() -> new ChartingState());
-
-			#if discord_rpc
-			DiscordClient.changePresence("Chart Editor", null, null, true);
-			#end
-		}
-
-		if (FlxG.keys.justPressed.NINE)
-			iconP1.swapOldIcon();
-
 		// FlxG.watch.addQuick('VOL', vocals.amplitudeLeft);
 		// FlxG.watch.addQuick('VOLRight', vocals.amplitudeRight);
 
@@ -782,13 +770,24 @@ class PlayState extends MusicBeatState
 			FlxG.switchState(() -> new Charting()); */
 
 		#if debug
+
+		if (FlxG.keys.justPressed.SEVEN)
+		{
+			FlxG.switchState(() -> new ChartingState());
+
+			#if discord_rpc
+			DiscordClient.changePresence("Chart Editor", null, null, true);
+			#end
+		}
 		if (FlxG.keys.justPressed.ONE)
 			endSong();
 		if (FlxG.keys.justPressed.EIGHT)
 		{
-			/* 	 8 for opponent char
-							   SHIFT+8 for player char
-				CTRL+SHIFT+8 for gf */
+			/* 	
+				8 for opponent char
+				SHIFT+8 for player char
+				CTRL+SHIFT+8 for gf
+			*/
 			if (FlxG.keys.pressed.SHIFT)
 				if (FlxG.keys.pressed.CONTROL)
 					FlxG.switchState(() -> new AnimationDebug(gf.curCharacter));
