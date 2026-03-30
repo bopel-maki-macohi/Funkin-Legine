@@ -99,12 +99,12 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.switchState(() -> new AnimationDebug(bf.curCharacter));
 		#end
 
-		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
+		if (bf.animation.name == 'firstDeath' && bf.animation.curAnim.curFrame == 12)
 		{
 			FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		}
 
-		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
+		if (bf.animation.name == 'firstDeath' && bf.animation.finished)
 		{
 			bf.startedDeath = true;
 			coolStartDeath();

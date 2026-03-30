@@ -21,10 +21,14 @@ class InitState extends FlxState
 		PlayerSettings.init();
 		Highscore.load();
 
-		#if FREEPLAY
-		FlxG.switchState(() -> new FreeplayState());
-		#elseif CHARTING
+		Paths.setCurrentLevel('shared');
+
+		// #if FREEPLAY
+		// FlxG.switchState(() -> new FreeplayState());
+		#if CHARTING
 		FlxG.switchState(() -> new ChartingState());
+		// #elseif ANIMDEBUG
+		// FlxG.switchState(() -> new AnimationDebug('bf'));
 		#else
 		new FlxTimer().start(1, function(tmr:FlxTimer)
 		{

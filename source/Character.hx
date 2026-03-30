@@ -70,30 +70,24 @@ class Character extends FlxSprite
 				playAnim('idle');
 
 			case 'bf':
-				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
+				var tex = Paths.getSparrowAtlas('characters/bf');
 				frames = tex;
-				quickAnimAdd('idle', 'BF idle dance');
-				quickAnimAdd('singUP', 'BF NOTE UP0');
-				quickAnimAdd('singLEFT', 'BF NOTE LEFT0');
-				quickAnimAdd('singRIGHT', 'BF NOTE RIGHT0');
-				quickAnimAdd('singDOWN', 'BF NOTE DOWN0');
-				quickAnimAdd('singUPmiss', 'BF NOTE UP MISS');
-				quickAnimAdd('singLEFTmiss', 'BF NOTE LEFT MISS');
-				quickAnimAdd('singRIGHTmiss', 'BF NOTE RIGHT MISS');
-				quickAnimAdd('singDOWNmiss', 'BF NOTE DOWN MISS');
-				quickAnimAdd('hey', 'BF HEY');
 
-				quickAnimAdd('firstDeath', "BF dies");
-				animation.addByPrefix('deathLoop', "BF Dead Loop", 24, true);
-				quickAnimAdd('deathConfirm', "BF Dead confirm");
+				quickAnimAdd('idle', 'bf anim idle');
 
-				animation.addByPrefix('scared', 'BF idle shaking', 24, true);
+				quickAnimAdd('singLEFT', 'bf anim left');
+				quickAnimAdd('singDOWN', 'bf anim down');
+				quickAnimAdd('singUP', 'bf anim up');
+				quickAnimAdd('singRIGHT', 'bf anim right');
 
-				loadOffsetFile(curCharacter);
+				// quickAnimAdd('singLEFTmiss', 'bf anim miss left');
+				// quickAnimAdd('singDOWNmiss', 'bf anim miss down');
+				// quickAnimAdd('singUPmiss', 'bf anim miss up');
+				// quickAnimAdd('singRIGHTmiss', 'bf anim miss right');
 
 				playAnim('idle');
 
-				loadOffsetFile(curCharacter);
+				// loadOffsetFile(curCharacter);
 		}
 
 		dance();
@@ -142,14 +136,14 @@ class Character extends FlxSprite
 			addOffset(splitWords[0], Std.parseInt(splitWords[1]), Std.parseInt(splitWords[2]));
 		}
 	}
-	
+
 	public var startedDeath:Bool = false;
 
 	override function update(elapsed:Float)
 	{
 		if (!isPlayer)
 		{
-			if (animation.curAnim.name.startsWith('sing'))
+			if (animation?.name?.startsWith('sing'))
 				holdTimer += elapsed;
 
 			var dadVar:Float = 4;
@@ -164,19 +158,19 @@ class Character extends FlxSprite
 		}
 		else if (isPlayer && !debugMode)
 		{
-			if (animation.curAnim.name.startsWith('sing'))
+			if (animation.name.startsWith('sing'))
 			{
 				holdTimer += elapsed;
 			}
 			else
 				holdTimer = 0;
 
-			if (animation.curAnim.name.endsWith('miss') && animation.curAnim.finished && !debugMode)
+			if (animation.name.endsWith('miss') && animation.finished && !debugMode)
 			{
 				playAnim('idle', true, false, 10);
 			}
 
-			if (animation.curAnim.name == 'firstDeath' && animation.curAnim.finished && startedDeath)
+			if (animation.name == 'firstDeath' && animation.finished && startedDeath)
 			{
 				playAnim('deathLoop');
 			}
@@ -185,14 +179,14 @@ class Character extends FlxSprite
 		if (curCharacter.endsWith('-car'))
 		{
 			// looping hair anims after idle finished
-			if (!animation.curAnim.name.startsWith('sing') && animation.curAnim.finished)
+			if (!animation.name.startsWith('sing') && animation.finished)
 				playAnim('idleHair');
 		}
 
 		switch (curCharacter)
 		{
 			case 'gf':
-				if (animation.curAnim.name == 'hairFall' && animation.curAnim.finished)
+				if (animation.name == 'hairFall' && animation.finished)
 					playAnim('danceRight');
 		}
 
@@ -211,7 +205,7 @@ class Character extends FlxSprite
 			switch (curCharacter)
 			{
 				case 'gf' | 'gf-christmas' | 'gf-car' | 'gf-pixel' | 'gf-tankmen':
-					if (!animation.curAnim.name.startsWith('hair'))
+					if (!animation.name.startsWith('hair'))
 					{
 						danced = !danced;
 
@@ -226,7 +220,7 @@ class Character extends FlxSprite
 					// playAnim('shoot' + FlxG.random.int(1, 4), true);
 
 				case 'tankman':
-					if (!animation.curAnim.name.endsWith('DOWN-alt'))
+					if (!animation.name.endsWith('DOWN-alt'))
 						playAnim('idle');
 
 				case 'spooky':
