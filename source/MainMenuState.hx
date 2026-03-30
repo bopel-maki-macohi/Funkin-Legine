@@ -26,10 +26,6 @@ using StringTools;
 #if discord_rpc
 import Discord.DiscordClient;
 #end
-#if newgrounds
-import io.newgrounds.NG;
-import ui.NgPrompt;
-#end
 
 class MainMenuState extends MusicBeatState
 {
@@ -126,11 +122,6 @@ class MainMenuState extends MusicBeatState
 		super.finishTransIn();
 
 		menuItems.enabled = true;
-
-		// #if newgrounds
-		// if (NGio.savedSessionFailed)
-		// 	showSavedSessionFailed();
-		// #end
 	}
 
 	function onMenuItemChange(selected:MenuItem)
