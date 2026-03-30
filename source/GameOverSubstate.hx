@@ -82,14 +82,16 @@ class GameOverSubstate extends MusicBeatSubstate
 
 		if (controls.BACK)
 		{
-			PlayState.deathCounter = 0;
-			PlayState.seenCutscene = false;
-			FlxG.sound.music.stop();
+			endBullshit();
+			
+			// PlayState.deathCounter = 0;
+			// PlayState.seenCutscene = false;
+			// FlxG.sound.music.stop();
 
-			if (PlayState.isStoryMode)
-				FlxG.switchState(() -> new StoryMenuState());
-			else
-				FlxG.switchState(() -> new FreeplayState());
+			// if (PlayState.isStoryMode)
+			// 	FlxG.switchState(() -> new StoryMenuState());
+			// else
+			// 	FlxG.switchState(() -> new FreeplayState());
 		}
 
 		#if debug
@@ -102,28 +104,10 @@ class GameOverSubstate extends MusicBeatSubstate
 			FlxG.camera.follow(camFollow, LOCKON, 0.01);
 		}
 
-		switch (PlayState.storyWeek)
+		if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
 		{
-			case 7:
-				if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished && !playingDeathSound)
-				{
-					playingDeathSound = true;
-
-					bf.startedDeath = true;
-					coolStartDeath(0.2);
-
-					FlxG.sound.play(Paths.sound('jeffGameover/jeffGameover-' + randomGameover), 1, false, null, true, function()
-					{
-						if (!isEnding)
-							FlxG.sound.music.fadeIn(4, 0.2, 1);
-					});
-				}
-			default:
-				if (bf.animation.curAnim.name == 'firstDeath' && bf.animation.curAnim.finished)
-				{
-					bf.startedDeath = true;
-					coolStartDeath();
-				}
+			bf.startedDeath = true;
+			coolStartDeath();
 		}
 
 		if (FlxG.sound.music.playing)

@@ -93,8 +93,6 @@ class Character extends FlxSprite
 
 				playAnim('idle');
 
-				flipX = true;
-
 				loadOffsetFile(curCharacter);
 		}
 
@@ -164,7 +162,7 @@ class Character extends FlxSprite
 				holdTimer = 0;
 			}
 		}
-		else if (isPlayer && !debugModes)
+		else if (isPlayer && !debugMode)
 		{
 			if (animation.curAnim.name.startsWith('sing'))
 			{
