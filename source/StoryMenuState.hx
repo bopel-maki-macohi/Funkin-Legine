@@ -14,7 +14,6 @@ import flixel.text.FlxText;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
-import lime.net.curl.CURLCode;
 
 using StringTools;
 
@@ -25,12 +24,12 @@ class StoryMenuState extends MusicBeatState
 	var weekData:Array<Dynamic> = [
 		['Tutorial'],
 		['Bopeebo', 'Fresh', 'Dadbattle'],
-		['Spookeez', 'South', "Monster"],
-		['Pico', 'Philly', "Blammed"],
-		['Satin-Panties', "High", "Milf"],
-		['Cocoa', 'Eggnog', 'Winter-Horrorland'],
-		['Senpai', 'Roses', 'Thorns'],
-		['Ugh', 'Guns', 'Stress']
+		// ['Spookeez', 'South', "Monster"],
+		// ['Pico', 'Philly', "Blammed"],
+		// ['Satin-Panties', "High", "Milf"],
+		// ['Cocoa', 'Eggnog', 'Winter-Horrorland'],
+		// ['Senpai', 'Roses', 'Thorns'],
+		// ['Ugh', 'Guns', 'Stress']
 	];
 	var curDifficulty:Int = 1;
 
